@@ -1,10 +1,11 @@
 import { zValidator } from "@hono/zod-validator";
 import { container } from "@repo/core/container";
-import { CreateAccount } from "@repo/core/contexts/example/accounts/application/create-account.usecase";
-import { DomainError } from "@repo/core/shared/domain/domain-error";
+import { AccountCreator } from "@repo/core/contexts/example/accounts/application/AccountCreator.usecase";
+import { DomainError } from "@repo/core/shared/domain/DomainError";
+import { Uuid } from "@repo/core/shared/domain/value-object/Uuid";
 import { z } from "zod";
-import { factory } from "~/lib/factory";
-import { created, domainError, internalServerError } from "~/lib/http-response";
+import { factory } from "~/lib/Factory";
+import { created, domainError, internalServerError } from "~/lib/HttpResponse";
 
 /**
  * POST /accounts - Create Account Endpoint
@@ -20,7 +21,7 @@ import { created, domainError, internalServerError } from "~/lib/http-response";
  */
 
 export const postAccountBodySchema = z.object({
-  id: z.string().uuid(),
+  id: z.string().uuid().default(Uuid.generate().value),
   name: z.string().min(1),
   email: z.string().email(),
 });
@@ -33,10 +34,10 @@ export const postAccountHandlers = factory.createHandlers(
       const user = c.get("user");
 
       // PATTERN: Resolve use case from container
-      const createAccount = container.get(CreateAccount);
+      const accountCreator = container.get(AccountCreator);
 
       // PATTERN: Execute with validated payload
-      await createAccount.execute({
+      await accountCreator.execute({
         id: body.id,
         name: body.name,
         email: body.email,
@@ -48,6 +49,8 @@ export const postAccountHandlers = factory.createHandlers(
       if (error instanceof DomainError) {
         return domainError(c, error, 400);
       }
+
+      console.error(error);
 
       return internalServerError(c);
     }

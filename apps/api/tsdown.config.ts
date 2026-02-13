@@ -1,7 +1,7 @@
 import { defineConfig } from "tsdown";
 
 export default defineConfig({
-  entry: ["src/rpc.ts"],
+  entry: ["src/Rpc.ts"],
   format: ["esm"],
   outDir: "dist",
   clean: true,

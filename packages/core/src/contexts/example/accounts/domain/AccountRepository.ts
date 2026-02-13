@@ -1,4 +1,4 @@
-import type { Account } from "./account";
+import type { Account } from "./Account";
 
 export abstract class AccountRepository {
   abstract save(account: Account): Promise<void>;

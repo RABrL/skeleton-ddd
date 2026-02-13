@@ -1,11 +1,14 @@
 import { auth } from "@repo/auth";
 import type { Context, Next } from "hono";
-import { unauthorized } from "~/lib/http-response";
+import { unauthorized } from "~/lib/HttpResponse";
+
+const BASE_PATH = "/api";
 
 const STARTS_WITH_PUBLIC = ["/public", "/auth"];
 const EXACT_MATCH_PUBLIC = ["/openapi.json", "/docs"];
 
 function isPublicPath(path: string) {
+  path = path.replace(BASE_PATH, "");
   if (STARTS_WITH_PUBLIC.some((startsWith) => path.startsWith(startsWith)))
     return true;
   if (EXACT_MATCH_PUBLIC.some((exactMatch) => path === exactMatch)) return true;
@@ -27,6 +30,7 @@ export const authMiddleware = async (c: Context, next: Next) => {
 
   // All other routes require authentication
   if (!session?.user) {
+    console.log("Unauthorized");
     return unauthorized(c);
   }
 

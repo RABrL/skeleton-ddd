@@ -1,0 +1,21 @@
+### Sign up
+POST http://localhost:8000/api/auth/sign-up/email 
+content-type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "password": "password"
+}
+
+### Sign in
+POST http://localhost:8000/api/auth/sign-in/email 
+content-type: application/json
+origin: http://localhost:3000
+
+{
+  "email": "john.doe@example.com",
+  "password": "password"
+}
+
+### Create

@@ -1,4 +1,4 @@
-import type { DomainEvent } from "./domain-event";
+import type { DomainEvent } from "./DomainEvent";
 
 export abstract class AggregateRoot {
   private domainEvents: Array<DomainEvent> = [];
@@ -14,5 +14,5 @@ export abstract class AggregateRoot {
     this.domainEvents.push(event);
   }
 
-  abstract toPrimitives(): unknown
+  abstract toPrimitives(): Record<string, unknown>;
 }

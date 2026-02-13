@@ -6,7 +6,6 @@ export type DomainErrorPrimitives = {
 
 export abstract class DomainError extends Error {
   abstract readonly type: string;
-  abstract readonly message: string;
 
   toPrimitives(): DomainErrorPrimitives {
     const props = Object.entries(this).filter(
@@ -28,10 +27,4 @@ export abstract class DomainError extends Error {
 
 export class InvalidArgumentError extends DomainError {
   readonly type = "InvalidArgumentError";
-  readonly message: string;
-
-  constructor(message: string) {
-    super();
-    this.message = message;
-  }
 }

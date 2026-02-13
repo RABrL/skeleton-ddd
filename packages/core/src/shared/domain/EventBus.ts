@@ -1,5 +1,5 @@
-import type { DomainEvent } from "./domain-event";
-import type { DomainEventSubscribers } from "./domain-event-subscriber";
+import type { DomainEvent } from "./DomainEvent";
+import type { DomainEventSubscribers } from "./DomainEventSubscriber";
 
 export abstract class EventBus {
   abstract publish(events: Array<DomainEvent>): Promise<void>;

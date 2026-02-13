@@ -1,4 +1,4 @@
-import { generateUuid } from "@repo/core/utils";
+import { Uuid } from "@repo/core/shared/domain/value-object/Uuid";
 import { db } from "@repo/db";
 import {
   authAccount,
@@ -10,7 +10,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 
 export const auth = betterAuth({
-  basePath: "/auth",
+  basePath: "/api/auth",
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: {
@@ -25,7 +25,7 @@ export const auth = betterAuth({
   },
   advanced: {
     database: {
-      generateId: () => generateUuid(),
+      generateId: () => Uuid.generate().value,
     },
   },
 });

@@ -1,9 +1,9 @@
-import { generateUuid } from "../../utils";
+import { Uuid } from "./value-object/Uuid";
 
-export type DomainEventAttributes = { [key: string]: unknown };
+export type DomainEventAttributes = Record<string, unknown>;
 
 export abstract class DomainEvent {
-  static EVENT_NAME: string;
+  static readonly EVENT_NAME: string;
 
   static fromPrimitives: (params: {
     aggregateId: string;
@@ -16,7 +16,6 @@ export abstract class DomainEvent {
   readonly aggregateId: string;
   readonly eventId: string;
   readonly occurredOn: Date;
-  
 
   protected constructor(params: {
     eventName: string;
@@ -27,7 +26,7 @@ export abstract class DomainEvent {
     const { eventName, aggregateId, eventId, occurredOn } = params;
     this.eventName = eventName;
     this.aggregateId = aggregateId;
-    this.eventId = eventId ?? generateUuid();
+    this.eventId = eventId ?? Uuid.generate().value;
     this.occurredOn = occurredOn ?? new Date();
   }
 

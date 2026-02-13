@@ -1,0 +1,8 @@
+### Create account
+POST http://localhost:8000/api/accounts
+content-type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john2.doe@example.com"
+}

@@ -13,6 +13,6 @@ export default defineConfig({
     servers: [{ url: "http://localhost:8000" }],
   },
   outputs: {
-    openApiJson: "./openapi.json",
+    openApiJson: "./openapi/openapi.json",
   },
 });

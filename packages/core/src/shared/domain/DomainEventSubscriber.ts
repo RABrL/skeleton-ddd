@@ -1,4 +1,4 @@
-import type { DomainEvent, DomainEventClass } from "./domain-event";
+import type { DomainEvent, DomainEventClass } from "./DomainEvent";
 
 export abstract class DomainEventSubscriber<T extends DomainEvent> {
   abstract on(domainEvent: T): Promise<void>;

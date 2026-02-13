@@ -1,6 +1,6 @@
+import { AccountRepository } from "@repo/core/contexts/example/accounts/domain/AccountRepository";
+import { DrizzleAccountRepository } from "@repo/core/contexts/example/accounts/infrastructure/DrizzleAccountRepository";
 import type { ContainerBuilder } from "diod";
-import { AccountRepository } from "../../../src/contexts/example/accounts/domain/account-repository";
-import { DrizzleAccountRepository } from "../../../src/contexts/example/accounts/infrastructure/drizzle-account-repository";
 
 /**
  * Account Repository DI Binding

@@ -3,11 +3,19 @@
 ## Summary
 
 Successfully ported DI patterns from dok to template, including:
-✅ Lazy EventBus subscriber resolution (prevents circular dependencies)
-✅ Example use case with @InferDependencies decorator
-✅ Example API controller with container.get() pattern
-✅ Package exports for context imports
-✅ Complete end-to-end example (domain → application → infrastructure → API)
+- Lazy EventBus subscriber resolution (prevents circular dependencies)
+- Example use case with @InferDependencies decorator
+- Example API controller with container.get() pattern
+- Package exports for context imports
+- Complete end-to-end example (domain -> application -> infrastructure -> API)
+- DrizzlePostgresRepository abstract base class for repository implementations
+
+## File Naming Convention
+
+- **Files**: TitleCase (e.g., `AccountRepository.ts`, `HttpResponse.ts`, `AuthMiddleware.ts`)
+- **Folders**: kebab-case (e.g., `value-object/`, `event-bus/`, `in-memory/`)
+- **Use case files**: TitleCase with `.usecase.ts` suffix (e.g., `AccountCreator.usecase.ts`)
+- **Subscriber files**: TitleCase with `.subscriber.ts` suffix (e.g., `ExampleOnAccountCreated.subscriber.ts`)
 
 ## Critical Finding: Import Type vs Value Imports
 
@@ -17,7 +25,7 @@ When using `import type` for constructor dependencies, Bun's TypeScript transpil
 
 ```typescript
 // ❌ BROKEN - Metadata will be `Object`
-import type { AccountRepository } from "../domain/account-repository";
+import type { AccountRepository } from "../domain/AccountRepository";
 
 @InferDependencies()
 export class CreateAccount {
@@ -31,7 +39,7 @@ Use regular imports (not `import type`) for classes used as constructor dependen
 
 ```typescript
 // ✅ WORKS - Metadata preserves AccountRepository class reference
-import { AccountRepository } from "../domain/account-repository";
+import { AccountRepository } from "../domain/AccountRepository";
 
 @InferDependencies()
 export class CreateAccount {
@@ -57,66 +65,102 @@ export class CreateAccount {
 - Continue using `import type` for types, interfaces, and type aliases
 - Example: payload types, primitives types, etc.
 
-## Files Modified
+## DrizzlePostgresRepository Base Class
+
+Located at `packages/core/src/shared/infrastructure/persistence/DrizzlePostgresRepository.ts`.
+
+Provides common database operations for repository implementations using Drizzle + PostgreSQL:
+
+- `persist(aggregate, target)` — Upsert (insert or update on conflict)
+- `findOne(column, value)` — Find a single row by column value
+- `findMany(column?, value?)` — Find multiple rows with optional filter
+- `remove(column, value)` — Delete rows by column value
+
+### Usage
+
+```typescript
+import { exampleAccount } from "@repo/db/schema";
+import { DrizzlePostgresRepository } from "../../../../shared/infrastructure/persistence/DrizzlePostgresRepository";
+import { Account, type AccountProps } from "../domain/Account";
+import { AccountRepository } from "../domain/AccountRepository";
+
+export class DrizzleAccountRepository
+  extends DrizzlePostgresRepository<Account>
+  implements AccountRepository
+{
+  protected table = exampleAccount;
+
+  protected toAggregate(row: Record<string, unknown>): Account {
+    return Account.fromPrimitives(row as AccountProps);
+  }
+
+  async save(account: Account): Promise<void> {
+    await this.persist(account, exampleAccount.id);
+  }
+
+  async findById(id: string): Promise<Account | null> {
+    return this.findOne(exampleAccount.id, id);
+  }
+}
+```
+
+### Key Typing Notes
+
+- Uses `PgTable` and `IndexColumn` from `drizzle-orm/pg-core` (not the generic `Table`/`Column`) to satisfy PostgreSQL-specific operations like `onConflictDoUpdate`
+- `toAggregate` receives `Record<string, unknown>` — cast to your props type inside the implementation
+
+## Files
 
 ### Core Package
 
-1. **packages/core/src/shared/infrastructure/in-memory-event-bus.ts**
-   - Added lazy subscriber resolution
-   - Prevents circular dependency issues
+1. **packages/core/src/shared/domain/AggregateRoot.ts** — Base class for aggregates with domain event support
+2. **packages/core/src/shared/domain/DomainEvent.ts** — Base domain event class
+3. **packages/core/src/shared/domain/DomainEventSubscriber.ts** — Abstract subscriber class
+4. **packages/core/src/shared/domain/DomainError.ts** — Base error class with `toPrimitives()`
+5. **packages/core/src/shared/domain/EventBus.ts** — Abstract event bus port
+6. **packages/core/src/shared/domain/Nullable.ts** — Nullable type utility
+7. **packages/core/src/shared/domain/Primitives.ts** — Primitives type utility
+8. **packages/core/src/shared/domain/value-object/** — Value object base classes (Uuid, String, Int, Enum)
+9. **packages/core/src/shared/infrastructure/persistence/DrizzlePostgresRepository.ts** — Abstract Drizzle repository base
+10. **packages/core/src/shared/infrastructure/event-bus/in-memory/InMemoryAsyncEventBus.ts** — In-memory async event bus
 
-2. **packages/core/di/shared/event-bus.ts**
-   - Updated to use lazy resolver pattern
+### Example Domain Code
 
-3. **packages/core/package.json**
-   - Added `"./contexts/*": "./src/contexts/*.ts"` export
+11. **packages/core/src/contexts/example/accounts/domain/Account.ts** — Account aggregate
+12. **packages/core/src/contexts/example/accounts/domain/AccountRepository.ts** — Abstract repository port
+13. **packages/core/src/contexts/example/accounts/domain/AccountId.ts** — Account ID value object
+14. **packages/core/src/contexts/example/accounts/domain/AccountName.ts** — Account name value object
+15. **packages/core/src/contexts/example/accounts/domain/AccountEmail.ts** — Account email value object
+16. **packages/core/src/contexts/example/accounts/domain/AccountCreatedDomainEvent.ts** — Domain event
+17. **packages/core/src/contexts/example/accounts/domain/AccountAlreadyExist.ts** — Domain error
+18. **packages/core/src/contexts/example/accounts/domain/AccountNameLengthIncorrect.ts** — Domain error
+19. **packages/core/src/contexts/example/accounts/application/AccountCreator.usecase.ts** — Create account use case
+20. **packages/core/src/contexts/example/accounts/application/AccountFinder.usecase.ts** — Find account use case
+21. **packages/core/src/contexts/example/accounts/application/ExampleOnAccountCreated.subscriber.ts** — Example subscriber
+22. **packages/core/src/contexts/example/accounts/infrastructure/DrizzleAccountRepository.ts** — Drizzle repository adapter
 
-### Example Domain Code (New Files)
+### DI Configuration
 
-4. **packages/core/src/contexts/example/accounts/domain/account.ts**
-   - Account type definition
+23. **packages/core/di/container.ts** — Container builder
+24. **packages/core/di/autoregister.ts** — Auto-discovery and registration
+25. **packages/core/di/contexts/example/accountRepository.ts** — Account repo DI binding
+26. **packages/core/di/shared/eventBus.ts** — EventBus DI binding with lazy subscriber resolution
 
-5. **packages/core/src/contexts/example/accounts/domain/account-repository.ts**
-   - Abstract repository port (interface)
+### Database
 
-6. **packages/core/src/contexts/example/accounts/application/create-account.usecase.ts**
-   - Example use case with @InferDependencies
-   - Shows constructor injection pattern
-
-7. **packages/core/src/contexts/example/accounts/infrastructure/drizzle-account-repository.ts**
-   - Concrete repository implementation using Drizzle
-
-8. **packages/core/di/contexts/example/account-repository.ts**
-   - DI binding (port → adapter)
-
-### Database Schema
-
-9. **packages/db/schema.ts**
-   - Added `exampleAccount` table
+27. **packages/db/schema.ts** — Drizzle schema with `exampleAccount` table
+28. **packages/db/index.ts** — DB connection
 
 ### API Package
 
-10. **apps/api/src/controllers/accounts/post-account.ts**
-    - Example controller with container.get()
-    - Zod validation
-    - Domain error handling
-
-11. **apps/api/src/routes/accounts.ts**
-    - Route definition for accounts resource
-
-12. **apps/api/src/index.ts**
-    - Registered accounts route
-
-13. **apps/api/src/lib/http-response.ts**
-    - Added `conflict()` helper (optional)
-
-## Verification Status
-
-✅ Core package type-checks successfully
-✅ API package imports without errors
-✅ Container builds and resolves dependencies
-✅ EventBus lazy resolution works correctly
-✅ No circular dependency issues
+29. **apps/api/src/index.ts** — Hono app entry point
+30. **apps/api/src/routes/Accounts.ts** — Account routes
+31. **apps/api/src/controllers/accounts/PostAccount.ts** — POST /accounts controller
+32. **apps/api/src/lib/HttpResponse.ts** — HTTP response helpers
+33. **apps/api/src/lib/Factory.ts** — Hono factory with protected variables
+34. **apps/api/src/middlewares/AuthMiddleware.ts** — Auth middleware
+35. **apps/api/src/middlewares/CorsMiddleware.ts** — CORS middleware
+36. **apps/api/src/types/App.ts** — App variable types
 
 ## Pattern Reference
 
@@ -124,7 +168,7 @@ export class CreateAccount {
 
 ```typescript
 import { InferDependencies } from "../../../../../di/autoregister";
-import { SomeRepository } from "../domain/some-repository"; // NOTE: Not "import type"!
+import { SomeRepository } from "../domain/SomeRepository"; // NOTE: Not "import type"!
 
 @InferDependencies()
 export class SomeUseCase {
@@ -139,20 +183,33 @@ export class SomeUseCase {
 ### Repository Pattern
 
 ```typescript
-// domain/some-repository.ts
+// domain/SomeRepository.ts
 export abstract class SomeRepository {
-  abstract save(entity: Entity): Promise<void>;
-  abstract findById(id: string): Promise<Entity | null>;
+  abstract save(aggregate: Aggregate): Promise<void>;
+  abstract findById(id: string): Promise<Aggregate | null>;
 }
 
-// infrastructure/drizzle-some-repository.ts
-export class DrizzleSomeRepository extends SomeRepository {
-  async save(entity: Entity): Promise<void> {
-    // Implementation with Drizzle
+// infrastructure/DrizzleSomeRepository.ts
+export class DrizzleSomeRepository
+  extends DrizzlePostgresRepository<Aggregate>
+  implements SomeRepository
+{
+  protected table = someTable;
+
+  protected toAggregate(row: Record<string, unknown>): Aggregate {
+    return Aggregate.fromPrimitives(row as AggregateProps);
+  }
+
+  async save(aggregate: Aggregate): Promise<void> {
+    await this.persist(aggregate, someTable.id);
+  }
+
+  async findById(id: string): Promise<Aggregate | null> {
+    return this.findOne(someTable.id, id);
   }
 }
 
-// di/contexts/some/some-repository.ts
+// di/contexts/some/SomeRepository.ts
 export function register(builder: ContainerBuilder) {
   builder.register(SomeRepository).use(DrizzleSomeRepository);
 }
@@ -162,7 +219,7 @@ export function register(builder: ContainerBuilder) {
 
 ```typescript
 import { container } from "@repo/core/container";
-import { SomeUseCase } from "@repo/core/contexts/some/application/some.usecase";
+import { SomeUseCase } from "@repo/core/contexts/some/application/SomeUseCase.usecase";
 
 export const postSomethingHandlers = factory.createHandlers(
   zValidator("json", schema),

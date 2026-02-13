@@ -1,6 +1,6 @@
 import { Hono } from "hono";
-import { postAccountHandlers } from "~/controllers/accounts/post-account";
-import type { AppVariables } from "~/types/app";
+import { postAccountHandlers } from "~/controllers/accounts/PostAccount";
+import type { AppVariables } from "~/types/App";
 
 /**
  * Accounts Routes
@@ -11,7 +11,11 @@ import type { AppVariables } from "~/types/app";
  *
  * Each route imports handlers from the controllers directory.
  */
+/**
+ * @name Accounts
+ */
 export const accountsApp = new Hono<{ Variables: AppVariables }>().post(
   "/",
   ...postAccountHandlers,
 );
+export type AppType = typeof accountsApp;
