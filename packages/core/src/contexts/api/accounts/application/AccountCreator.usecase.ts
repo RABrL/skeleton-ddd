@@ -1,5 +1,5 @@
 import { InferDependencies } from "../../../../../di/autoregister";
-import { EventBus } from "../../../../shared/domain/EventBus";
+import { EventBus } from "../../../shared/domain/EventBus";
 import { Account } from "../domain/Account";
 import { AccountAlreadyExistsError } from "../domain/AccountAlreadyExist";
 import { AccountRepository } from "../domain/AccountRepository";

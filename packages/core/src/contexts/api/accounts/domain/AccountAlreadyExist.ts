@@ -1,4 +1,4 @@
-import { InvalidArgumentError } from "../../../../shared/domain/DomainError";
+import { InvalidArgumentError } from "../../../shared/domain/DomainError";
 
 export class AccountAlreadyExistsError extends InvalidArgumentError {
   constructor(id: string) {

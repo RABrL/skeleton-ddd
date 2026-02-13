@@ -1,5 +1,5 @@
 import { exampleAccount } from "@repo/db/schema";
-import { DrizzlePostgresRepository } from "../../../../shared/infrastructure/persistence/DrizzlePostgresRepository";
+import { DrizzlePostgresRepository } from "../../../shared/infrastructure/persistence/DrizzlePostgresRepository";
 import { Account, type AccountProps } from "../domain/Account";
 import { AccountRepository } from "../domain/AccountRepository";
 
