@@ -1,6 +1,6 @@
 import { zValidator } from "@hono/zod-validator";
 import { container } from "@repo/core/container";
-import { AccountCreator } from "@repo/core/contexts/example/accounts/application/AccountCreator.usecase";
+import { AccountCreator } from "@repo/core/contexts/api/accounts/application/AccountCreator.usecase";
 import { DomainError } from "@repo/core/shared/domain/DomainError";
 import { Uuid } from "@repo/core/shared/domain/value-object/Uuid";
 import { z } from "zod";

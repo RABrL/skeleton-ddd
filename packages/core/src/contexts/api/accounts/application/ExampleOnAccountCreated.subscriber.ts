@@ -1,5 +1,5 @@
-import type { DomainEventClass } from "../../../shared/domain/DomainEvent";
-import type { DomainEventSubscriber } from "../../../shared/domain/DomainEventSubscriber";
+import type { DomainEventClass } from "@repo/core/shared/domain/DomainEvent";
+import type { DomainEventSubscriber } from "@repo/core/shared/domain/DomainEventSubscriber";
 import { AccountCreatedDomainEvent } from "../domain/AccountCreatedDomainEvent";
 
 export class ExampleOnAccountCreated

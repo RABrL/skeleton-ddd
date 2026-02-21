@@ -1,7 +1,7 @@
 import {
   DomainEvent,
   type DomainEventAttributes,
-} from "../../../shared/domain/DomainEvent";
+} from "../../../../shared/domain/DomainEvent";
 
 export class AccountCreatedDomainEvent extends DomainEvent {
   static override readonly EVENT_NAME = "account.created";

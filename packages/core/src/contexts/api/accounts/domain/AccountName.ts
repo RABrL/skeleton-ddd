@@ -1,4 +1,4 @@
-import { StringValueObject } from "../../../shared/domain/value-object/String";
+import { StringValueObject } from "../../../../shared/domain/value-object/String";
 import { AccountNameLengthIncorrect } from "./AccountNameLengthIncorrect";
 
 export class AccountName extends StringValueObject {

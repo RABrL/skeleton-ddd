@@ -1,4 +1,4 @@
-import { InferDependencies } from "../../../../../di/autoregister";
+import { InferDependencies } from "@repo/core/di/autoregister";
 import type { Account } from "../domain/Account";
 import { AccountRepository } from "../domain/AccountRepository";
 

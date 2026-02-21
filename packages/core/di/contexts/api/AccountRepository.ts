@@ -1,5 +1,5 @@
-import { AccountRepository } from "@repo/core/contexts/example/accounts/domain/AccountRepository";
-import { DrizzleAccountRepository } from "@repo/core/contexts/example/accounts/infrastructure/DrizzleAccountRepository";
+import { AccountRepository } from "@repo/core/contexts/api/accounts/domain/AccountRepository";
+import { DrizzleAccountRepository } from "@repo/core/contexts/api/accounts/infrastructure/DrizzleAccountRepository";
 import type { ContainerBuilder } from "diod";
 
 /**
