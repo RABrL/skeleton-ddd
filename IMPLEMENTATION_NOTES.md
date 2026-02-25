@@ -3,7 +3,6 @@
 ## Summary
 
 Successfully ported DI patterns from dok to template, including:
-- Lazy EventBus subscriber resolution (prevents circular dependencies)
 - Example use case with @InferDependencies decorator
 - Example API controller with container.get() pattern
 - Package exports for context imports
