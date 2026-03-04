@@ -1,6 +1,7 @@
 import { DrizzlePostgresRepository } from "@repo/core/shared/infrastructure/persistence/DrizzlePostgresRepository";
 import { exampleAccount } from "@repo/db/schema";
 import { Account, type AccountProps } from "../domain/Account";
+import type { AccountId } from "../domain/AccountId";
 import { AccountRepository } from "../domain/AccountRepository";
 
 /**
@@ -29,7 +30,7 @@ export class DrizzleAccountRepository
     await this.persist(account, exampleAccount.id);
   }
 
-  async findById(id: string): Promise<Account | null> {
-    return this.findOne(exampleAccount.id, id);
+  async findById(id: AccountId): Promise<Account | null> {
+    return this.findOne(exampleAccount.id, id.value);
   }
 }

@@ -13,10 +13,10 @@ export type AccountProps = {
 
 export class Account extends AggregateRoot {
   private constructor(
-    public readonly id: AccountId,
-    public readonly name: AccountName,
-    public readonly email: AccountEmail,
-    public readonly createdAt: Date,
+    private readonly id: AccountId,
+    private readonly name: AccountName,
+    private readonly email: AccountEmail,
+    private readonly createdAt: Date,
   ) {
     super();
   }
