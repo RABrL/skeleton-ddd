@@ -1,5 +1,5 @@
 import { AccountName } from "@repo/core/contexts/api/accounts/domain/AccountName";
-import { WordMother } from "../../../../shared/WordMother";
+import { WordMother } from "../../../../shared/domain/WordMother";
 
 export class AccountNameMother {
   static create(value: string): AccountName {

@@ -1,5 +1,5 @@
 import { AccountId } from "@repo/core/contexts/api/accounts/domain/AccountId";
-import { UuidMother } from "../../../../shared/UuidMother";
+import { UuidMother } from "../../../../shared/domain/UuidMother";
 
 export class AccountIdMother {
   static create(value: string): AccountId {
