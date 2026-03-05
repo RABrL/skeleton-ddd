@@ -1,9 +1,7 @@
 import type { ContainerBuilder } from "diod";
-import type { DomainEvent } from "../../src/shared/domain/DomainEvent";
-import type { DomainEventSubscriber } from "../../src/shared/domain/DomainEventSubscriber";
 import { EventBus } from "../../src/shared/domain/EventBus";
+import { DomainEventSubscribers } from "../../src/shared/infrastructure/event-bus/DomainEventSubscribers";
 import { InMemoryAsyncEventBus } from "../../src/shared/infrastructure/event-bus/in-memory/InMemoryAsyncEventBus";
-import { DOMAIN_EVENT_SUBSCRIBER } from "../tags";
 
 export function register(builder: ContainerBuilder) {
   builder.register(EventBus).useFactory((container) => {
@@ -22,14 +20,10 @@ export function register(builder: ContainerBuilder) {
      *
      */
 
-    const subscribers = container
-      .findTaggedServiceIdentifiers<DomainEventSubscriber<DomainEvent>>(
-        DOMAIN_EVENT_SUBSCRIBER,
-      )
-      .map((identifier) => container.get(identifier));
+    const subscribers = DomainEventSubscribers.from(container);
 
     const eventBus = new InMemoryAsyncEventBus();
-    eventBus.addSubscribers(subscribers);
+    eventBus.addSubscribers(subscribers.items);
     return eventBus;
   });
 }

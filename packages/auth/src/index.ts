@@ -28,6 +28,7 @@ export const auth = betterAuth({
       generateId: () => Uuid.generate().value,
     },
   },
+  trustedOrigins: ["http://localhost:3000"],
 });
 
 export type AuthAPI = typeof auth;

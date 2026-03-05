@@ -1,6 +1,7 @@
 ### Sign up
 POST http://localhost:8000/api/auth/sign-up/email 
 content-type: application/json
+Origin: http://localhost:3000
 
 {
   "name": "John Doe",
@@ -11,7 +12,7 @@ content-type: application/json
 ### Sign in
 POST http://localhost:8000/api/auth/sign-in/email 
 content-type: application/json
-origin: http://localhost:3000
+Origin: http://localhost:3000
 
 {
   "email": "john.doe@example.com",
