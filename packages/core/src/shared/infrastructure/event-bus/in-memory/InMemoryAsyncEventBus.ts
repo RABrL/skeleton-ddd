@@ -1,7 +1,7 @@
 import { EventEmitter } from "node:events";
 import type { DomainEvent } from "../../../domain/DomainEvent";
-import type { DomainEventSubscribers } from "../../../domain/DomainEventSubscriber";
 import type { EventBus } from "../../../domain/EventBus";
+import type { DomainEventSubscribers } from "../DomainEventSubscribers";
 
 export class InMemoryAsyncEventBus extends EventEmitter implements EventBus {
   async publish(events: DomainEvent[]): Promise<void> {
@@ -9,7 +9,7 @@ export class InMemoryAsyncEventBus extends EventEmitter implements EventBus {
   }
 
   addSubscribers(subscribers: DomainEventSubscribers) {
-    subscribers.forEach((subscriber) => {
+    subscribers.items.forEach((subscriber) => {
       subscriber.subscribedTo().forEach((event) => {
         this.on(event.EVENT_NAME, subscriber.on.bind(subscriber));
       });

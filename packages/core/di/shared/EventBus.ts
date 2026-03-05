@@ -19,11 +19,8 @@ export function register(builder: ContainerBuilder) {
      * }
      *
      */
-
-    const subscribers = DomainEventSubscribers.from(container);
-
     const eventBus = new InMemoryAsyncEventBus();
-    eventBus.addSubscribers(subscribers.items);
+    eventBus.addSubscribers(DomainEventSubscribers.from(container));
     return eventBus;
   });
 }

@@ -1,4 +1,4 @@
-import { ValueObject } from '.';
+import { ValueObject } from ".";
 
 export abstract class NumberValueObject extends ValueObject<number> {
   isBiggerThan(other: NumberValueObject): boolean {

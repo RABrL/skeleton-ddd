@@ -5,5 +5,3 @@ export abstract class DomainEventSubscriber<T extends DomainEvent> {
 
   abstract subscribedTo(): Array<DomainEventClass>;
 }
-
-export type DomainEventSubscribers = Array<DomainEventSubscriber<DomainEvent>>;

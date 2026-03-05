@@ -36,11 +36,7 @@
                     "type": "string"
                   }
                 },
-                "required": [
-                  "id",
-                  "name",
-                  "email"
-                ]
+                "required": ["id", "name", "email"]
               }
             }
           }
@@ -75,16 +71,10 @@
                           "properties": {}
                         }
                       },
-                      "required": [
-                        "type",
-                        "description",
-                        "data"
-                      ]
+                      "required": ["type", "description", "data"]
                     }
                   },
-                  "required": [
-                    "error"
-                  ]
+                  "required": ["error"]
                 }
               }
             }
@@ -107,24 +97,16 @@
                         },
                         "data": {}
                       },
-                      "required": [
-                        "type",
-                        "description",
-                        "data"
-                      ]
+                      "required": ["type", "description", "data"]
                     }
                   },
-                  "required": [
-                    "error"
-                  ]
+                  "required": ["error"]
                 }
               }
             }
           }
         },
-        "tags": [
-          "Accounts"
-        ]
+        "tags": ["Accounts"]
       }
     }
   }
